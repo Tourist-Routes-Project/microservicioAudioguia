@@ -3,20 +3,20 @@ const Schema = mongoose.Schema;
 
 const Audioguia = new Schema({
   id: {
-    type: number,
-    require: true,
+    type: Number,
+    required: true,
   },
   title: {
     type: String,
-    require: true,
+    required: true,
   },
   url_audioguia: {
     type: String,
-    require: true,
+    required: true,
   },
   id_checkpoint: {
-    type: number,
-    require: true,
+    type: Number,
+    required: true,
   },
 });
 
