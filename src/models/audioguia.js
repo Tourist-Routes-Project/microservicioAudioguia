@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const Audioguia = new Schema({
+const AudioguiaSchema = new Schema({
   id: {
     type: Number,
     required: true,
@@ -20,4 +20,4 @@ const Audioguia = new Schema({
   },
 });
 
-module.exports = mongoose.model("Audioguia", Audioguia);
+module.exports = mongoose.model("Audioguia", AudioguiaSchema);
