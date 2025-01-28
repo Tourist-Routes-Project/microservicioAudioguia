@@ -1,4 +1,5 @@
 const Audioguia = require("../models/audioguia");
+const axios = require("axios");
 
 const audioguiaController = {
   // Obtener todas las audioguías desde la base de datos
@@ -16,64 +17,65 @@ const audioguiaController = {
 
   // Crear una nueva audioguía
   createAudiguia: async (req, res) => {
+    const { id_checkpoint, title, url_audioguia } = req.body;
+
     try {
-      // Creamos un nuevo objeto Audioguia con los datos del body
-      const newAudioguia = new Audioguia(req.body);
-      // Guardamos la audioguía en la base de datos
+      // Verificar si el checkpoint existe en el microservicio de routeCheckpoint
+      const response = await axios.get(
+        `http://localhost:8080/api/v1/checkpoint/${id_checkpoint}`
+      );
+      const checkpoint = response.data;
+
+      // Si el checkpoint existe, crear la audioguía
+      const newAudioguia = new Audioguia({
+        title,
+        url_audioguia,
+        id_checkpoint,
+      });
       await newAudioguia.save();
-      //Devolvemos el estado 201
+
       res.status(201).json(newAudioguia);
     } catch (error) {
-      console.error(error);
-
-      // Si el error es un ValidationError, mostramos un mensaje personalizado
-      if (error.name === "ValidationError") {
-        return res.status(400).json({ error: error.message });
+      if (error.response && error.response.status === 404) {
+        return res.status(404).json({ error: "Checkpoint not found" });
       }
+      console.error(error);
       res.status(500).json({ error: "Error when creating the audioguide" });
     }
   },
 
+  // Editar una audioguía
   editarAudioguia: async (req, res) => {
     try {
       const { id } = req.params;
       const updates = req.body;
 
-      const updatedAudioguia = await Audioguia.findByIdAndUpdate(
-        id, // ID de la audioguía
-        updates, // Datos a actualizar
-        { new: true, runValidators: true }
-      );
+      const updatedAudioguia = await Audioguia.findByIdAndUpdate(id, updates, {
+        new: true,
+        runValidators: true,
+      });
 
-      // Si no se encuentra la audioguía, mandanmos un error 404
       if (!updatedAudioguia) {
         return res.status(404).json({ error: "Audioguide not found" });
       }
-      // Devolver la audioguía actualizada
       res.status(200).json(updatedAudioguia);
     } catch (error) {
       console.error(error);
-
-      // Si el error es un ValidationError, respondemos con un error 400
       if (error.name === "ValidationError") {
         return res.status(400).json({ error: error.message });
       }
-
-      // Si ocurre otro tipo de error, respondemos con un error 500
       res.status(500).json({ error: "Error when updating the audioguide" });
     }
   },
 
+  // Eliminar una audioguía
   eliminarAudioguia: async (req, res) => {
     try {
       const { id } = req.params;
-
       const deleteAudioguide = await Audioguia.findByIdAndDelete(id);
-      // Si no se encuentra la audioguía, mandanmos un error 404
       if (!deleteAudioguide) {
         return res.status(404).json({ error: "Audioguide not found" });
       }
-      // Devolver la audioguía elimininada
       res.status(200).json(deleteAudioguide);
     } catch (error) {
       res.status(500).json({ error: "Error when deleting the audioguide" });
