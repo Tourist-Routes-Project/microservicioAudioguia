@@ -22,7 +22,7 @@ const audioguiaController = {
     try {
       // Verificar si el checkpoint existe en el microservicio de routeCheckpoint
       const response = await axios.get(
-        `http://localhost:8080/api/v1/checkpoint/${id_checkpoint}`
+        `http://routeCheckpoint/api/v1/checkpoint/${id_checkpoint}`
       );
       const checkpoint = response.data;
 
