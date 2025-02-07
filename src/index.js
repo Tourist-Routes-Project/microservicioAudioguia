@@ -81,8 +81,6 @@ const eurekaClient = new Eureka({
 eurekaClient.start((error) => {
   if (error) {
     console.log("Error al registrar en Eureka:", error);
-  } else {
-    console.log("Microservicio Audioguía registrado en Eureka");
   }
 });
 

@@ -22,7 +22,7 @@ const audioguiaController = {
     try {
       // Verificar si el checkpoint existe en el microservicio de routeCheckpoint
       const response = await axios.get(
-        `http://routeCheckpoint/api/v1/checkpoint/${id_checkpoint}`
+        `http://192.168.1.46:8080/api/v1/checkpoint/${id_checkpoint}`
       );
       const checkpoint = response.data;
 
@@ -79,6 +79,27 @@ const audioguiaController = {
       res.status(200).json(deleteAudioguide);
     } catch (error) {
       res.status(500).json({ error: "Error when deleting the audioguide" });
+    }
+  },
+
+  // Obtener audioguías por ID de checkpoint
+  getAudioguiaByCheckpoint: async (req, res) => {
+    const { id_checkpoint } = req.params;
+    const checkpointId = parseInt(id_checkpoint);
+
+    try {
+      const audioguias = await Audioguia.find({ id_checkpoint: checkpointId });
+
+      if (audioguias.length === 0) {
+        return res
+          .status(404)
+          .json({ error: "No audioguides found for this checkpoint" });
+      }
+
+      res.status(200).json(audioguias);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Server error" });
     }
   },
 };
