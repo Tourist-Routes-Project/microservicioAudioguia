@@ -7,7 +7,7 @@ router.post("/api/v1/audioguide", audioguiaController.createAudiguia);
 router.put("/api/v1/audioguide/:id", audioguiaController.editarAudioguia);
 router.delete("/api/v1/audioguide/:id", audioguiaController.eliminarAudioguia);
 router.get(
-  "/api/v1/audioguide/checkpoint/:id_checkpoint",
+  "/api/v1/audioguides/checkpoint/:id_checkpoint",
   audioguiaController.getAudioguiaByCheckpoint
 );
 
